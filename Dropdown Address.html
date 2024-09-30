@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    select {
+      width: 300px;;
+    }
+    .form-group {
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <form action="#" method="POST">
+      <div class="form-group">
+        <label>Provinsi :</label><br>
+        <select name="provinsi" id="provinsi">
+        <option>Pilih</option>
+        </select>
+      </div>
+      <div class="form-group"></div>
+        <label>Kabupaten :</label><br>
+        <select name="kota" id="kota">
+        <option>Pilih</option>
+        </select>
+      </div>
+      <div class="form-group"></div>
+        <label>Kecamatan :</label><br>
+        <select name="kecamatan" id="kecamatan">
+        <option>Pilih</option>
+        </select>
+      </div>
+      <div class="form-group"></div>
+        <label>kelurahan :</label><br>
+        <select name="kelurahan" id="kelurahan">
+        <option>Pilih</option>
+        </select>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    fetch(`https://kanglerian.github.io/api-wilayah-indonesia/api/provinces.json`)
+      .then(response => response.json())
+      .then(provinces => {
+        var data = provinces;
+        var tampung = '<option>Pilih<option>';
+        data.forEach(element => {
+          tampung += `<option data-reg="${element/id}" value="${element.name}">${element.name}</option>`;
+        });
+      document.getEelementById('provinsi').ineerHTML = tampung;
+    });
+  </script>
+  <script>
+    const selectProvinsi = document.getElementById('provinsi');
+    selectProvinsi.addEventListener('change', (e) => {
+      var provinsi = e.target.options[e.target.selectedIndex].dataset.reg;
+      fetch(`https://kanglerian.github.io/api-wilayah-indonesia/api/regencies/${provinsi}.json`)
+        .then(response => response.json())
+        .then(regencies => {
+          var data = regencies;
+          var tampung = '<option>Pilih<option>';
+          document.getEelementById('kota').ineerHTML = '<option>Pilih</option>';
+          document.getEelementById('kecamatan').ineerHTML = '<option>Pilih</option>';
+          document.getEelementById('kelurahan').ineerHTML = '<option>Pilih</option>';
+          data.forEach(element => {
+            tampung += `<option data-dist="${element/id}" value="${element.name}">${element.name}</option>`;
+          });
+          document.getEelementById('kota').ineerHTML = tampung;
+        });
+    });
+
+    const selectKota = document.getElementById('kota');
+    selectKota.addEventListener('change', (e) => {
+      var kota = e.target.options[e.target.selectedIndex].dataset.dist;
+      fetch(`https://kanglerian.github.io/api-wilayah-indonesia/api/disctricts/${kota}.json`)
+        .then(response => response.json())
+        .then(districts => {
+          var data = districts;
+          var tampung = '<option>Pilih<option>';
+          document.getEelementById('kecamatan').ineerHTML = '<option>Pilih</option>';
+          document.getEelementById('kelurahan').ineerHTML = '<option>Pilih</option>';
+          data.forEach(element => {
+            tampung += `<option data-vill="${element/id}" value="${element.name}">${element.name}</option>`;
+          });
+          document.getEelementById('kecamatan').ineerHTML = tampung;
+        });
+    });
+
+    const selectKecamatan = document.getElementById('kecamatan');
+    selectKecamatan.addEventListener('change', (e) => {
+      var kecamatan = e.target.options[e.target.selectedIndex].dataset.vill;
+      fetch(`https://kanglerian.github.io/api-wilayah-indonesia/api/villages/${kecamatan}.json`)
+        .then(response => response.json())
+        .then(villages => {
+          var data = villages;
+          var tampung = '<option>Pilih<option>';
+          document.getEelementById('kelurahan').ineerHTML = '<option>Pilih</option>';
+          data.forEach(element => {
+            tampung += `<option value="${element.name}">${element.name}</option>`;
+          });
+          document.getEelementById('kelurahan').ineerHTML = tampung;
+        });
+    });
+  </script>
+</body>
+
+</html>
